@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Card } from 'react-md';
 
 import codes from '../entity/buttonCodes';
 
@@ -6,16 +7,24 @@ const GameWrapper = () => {
   const ref = useRef(null);
 
   const [speed, setSpeed] = useState(100);
-  const [cordX, setCordX] = useState(200);
-  const [cordY, setCordY] = useState(200);
   const [direction, setDirection] = useState('right');
   const [isActive, setIsActive] = useState(false);
+  const [appleCords, setAppleCords] = useState({
+    appleCordX: 200,
+    appleCordY: 200,
+  });
+  const [snakeBody, setSnakeBody] = useState([
+    {
+      cordX: 200,
+      cordY: 200,
+    },
+  ]);
 
   useEffect(() => {
     if (isActive) {
       scene();
     }
-  }, [cordX, cordY, isActive]);
+  }, [snakeBody, isActive]);
 
   // перехват нажатия кнопки на клавиатуре
   useEffect(() => {
@@ -24,62 +33,6 @@ const GameWrapper = () => {
       document.removeEventListener('keydown', press);
     };
   }, [isActive]);
-
-  const scene = () => {
-    if (ref.current) {
-      const canvas = ref.current;
-      const context = canvas.getContext('2d');
-      // console.log('RENDER');
-      if (context) {
-        const step = 10;
-        setTimeout(() => {
-          // console.log('ЗАДЕРЖКА');
-          canvas.width = 1000;
-          canvas.height = 800;
-
-          let x = cordX;
-          let y = cordY;
-          console.log('x', x);
-          console.log('y', y);
-
-          // управление клавишами
-          if (direction === 'right') {
-            x += step;
-          }
-          if (direction === 'left') {
-            x -= step;
-          }
-          if (direction === 'up') {
-            y -= step;
-          }
-          if (direction === 'down') {
-            y += step;
-          }
-
-          // если уходит за границы
-          if (x > canvas.width) {
-            x = 0;
-          }
-
-          if (x < 0) {
-            x = 1000;
-          }
-
-          if (y > canvas.height) {
-            y = 0;
-          }
-
-          if (y < 0) {
-            y = 800;
-          }
-
-          setCordX(x);
-          setCordY(y);
-          context.fillRect(x, y, 10, 10);
-        }, speed);
-      }
-    }
-  };
 
   const press = (event) => {
     if (!codes.includes(event.code)) {
@@ -107,7 +60,128 @@ const GameWrapper = () => {
     }
   };
 
-  return <canvas id="test" ref={ref} />;
+  const scene = () => {
+    if (ref.current) {
+      const canvas = ref.current;
+      const context = canvas.getContext('2d');
+      const appleCtx = canvas.getContext('2d');
+      if (context) {
+        setTimeout(() => {
+          canvas.width = 800;
+          canvas.height = 800;
+
+          const snakeTail = [];
+          const snake = snakeBody.map((item, index) => {
+            const elem = { ...item };
+            const { cordX, cordY } = elem;
+            const { appleCordX, appleCordY } = appleCords;
+            const isHead = index === 0;
+
+            if (isHead) {
+              context.fillStyle = 'rgb(255,255,0)';
+            } else {
+              context.fillStyle = 'rgb(255,127,80)';
+            }
+
+            let { x, y } = changeDirectionSnake(index, cordX, cordY);
+            // console.log('x', x);
+            // console.log('y', y);
+
+            // если уходит за границы
+            if (x > canvas.width) {
+              x = 0;
+            }
+
+            if (x < 0) {
+              x = canvas.width;
+            }
+
+            if (y > canvas.height) {
+              y = 0;
+            }
+
+            if (y < 0) {
+              y = canvas.height;
+            }
+
+            elem.cordX = x;
+            elem.cordY = y;
+            context.fillRect(x, y, 20, 20);
+
+            if (x === appleCordX && y === appleCordY) {
+              random();
+              snakeTail.push({
+                cordX: x,
+                cordY: y,
+              });
+            }
+            appleCtx.fillStyle = 'red';
+            appleCtx.fillRect(appleCordX, appleCordY, 20, 20);
+            return elem;
+          });
+          const result = snake.concat(snakeTail);
+          setSnakeBody(result);
+        }, speed);
+      }
+    }
+  };
+
+  const changeDirectionSnake = (index, cordX, cordY) => {
+    const step = 20;
+    const isHead = index === 0;
+    let x = cordX;
+    let y = cordY;
+
+    if (isHead) {
+      // управление клавишами
+      if (direction === 'right') {
+        x += step;
+      }
+      if (direction === 'left') {
+        x -= step;
+      }
+      if (direction === 'up') {
+        y -= step;
+      }
+      if (direction === 'down') {
+        y += step;
+      }
+    } else {
+      x = snakeBody[index - 1].cordX;
+      y = snakeBody[index - 1].cordY;
+    }
+    return { x, y };
+  };
+
+  const random = () => {
+    const max = 800;
+    const min = 20;
+    const num = 20;
+
+    const appleNesCordX =
+      Math.floor(Math.floor(Math.random() * (max - min + 1) + min) / num) * num;
+    const appleNesCordY =
+      Math.floor(Math.floor(Math.random() * (max - min + 1) + min) / num) * num;
+
+    setAppleCords({
+      appleCordX: appleNesCordX,
+      appleCordY: appleNesCordY,
+    });
+  };
+
+  return (
+    <section>
+      <Card
+        style={{
+          width: '800px',
+          height: '800px',
+          background: 'rgb(64,179,129)',
+        }}
+      >
+        <canvas id="responsive-canvas" ref={ref} />
+      </Card>
+    </section>
+  );
 };
 
 export default GameWrapper;
