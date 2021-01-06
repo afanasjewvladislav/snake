@@ -83,9 +83,9 @@ const Snake = () => {
             const isHead = index === 0;
 
             if (isHead) {
-              context.fillStyle = 'rgb(255,255,0)';
+              context.fillStyle = '#FFEB3B';
             } else {
-              context.fillStyle = 'rgb(255,127,80)';
+              context.fillStyle = '#F50057';
             }
 
             let { x, y } = changeDirectionSnake(index, cordX, cordY);
@@ -176,16 +176,24 @@ const Snake = () => {
   };
 
   return (
-    <section>
-      <Card
-        style={{
-          width: '800px',
-          height: '800px',
-          background: 'rgb(64,179,129)',
-        }}
-      >
-        <canvas id="responsive-canvas" ref={ref} />
-      </Card>
+    <section
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        margin: '40px 0 0 0',
+      }}
+    >
+      <div />
+      <div>
+        <Card
+          style={{
+            width: '800px',
+            height: '800px',
+          }}
+        >
+          <canvas id="responsive-canvas" ref={ref} />
+        </Card>
+      </div>
     </section>
   );
 };
