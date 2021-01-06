@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppBar, AppBarTitle, AppBarAction, MoreVertSVGIcon } from 'react-md';
-import GameWrapper from './pages/GameWrapper';
+import SnakeGameWrapper from './pages/SnakeGameWrapper';
 
 const App = () => {
   return (
@@ -16,7 +16,7 @@ const App = () => {
           <MoreVertSVGIcon />
         </AppBarAction>
       </AppBar>
-      <GameWrapper />
+      <SnakeGameWrapper />
     </section>
   );
 };

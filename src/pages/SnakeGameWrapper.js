@@ -1,24 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { Card } from 'react-md';
 
 import codes from '../entity/buttonCodes';
 
-const GameWrapper = () => {
+import { SnakeGameContext } from '../context/SnakeGameContext';
+
+const Snake = () => {
   const ref = useRef(null);
 
-  const [speed, setSpeed] = useState(100);
-  const [direction, setDirection] = useState('right');
-  const [isActive, setIsActive] = useState(false);
-  const [appleCords, setAppleCords] = useState({
-    appleCordX: 200,
-    appleCordY: 200,
-  });
-  const [snakeBody, setSnakeBody] = useState([
-    {
-      cordX: 200,
-      cordY: 200,
-    },
-  ]);
+  const {
+    snakeBody,
+    setSnakeBody,
+    speed,
+    direction,
+    setDirection,
+    isActive,
+    setIsActive,
+    appleCords,
+    setAppleCords,
+  } = useContext(SnakeGameContext);
 
   useEffect(() => {
     if (isActive) {
@@ -26,32 +26,37 @@ const GameWrapper = () => {
     }
   }, [snakeBody, isActive]);
 
+  useEffect(() => {
+    random();
+  }, []);
+
   // перехват нажатия кнопки на клавиатуре
   useEffect(() => {
     document.addEventListener('keydown', press);
     return () => {
       document.removeEventListener('keydown', press);
     };
-  }, [isActive]);
+  }, [isActive, direction]);
 
   const press = (event) => {
     if (!codes.includes(event.code)) {
       return;
     }
-    switch (event.code) {
-      case 'ArrowUp':
+
+    switch (true) {
+      case event.code === 'ArrowUp' && direction !== 'down':
         setDirection('up');
         break;
-      case 'ArrowDown':
+      case event.code === 'ArrowDown' && direction !== 'up':
         setDirection('down');
         break;
-      case 'ArrowLeft':
+      case event.code === 'ArrowLeft' && direction !== 'right':
         setDirection('left');
         break;
-      case 'ArrowRight':
+      case event.code === 'ArrowRight' && direction !== 'left':
         setDirection('right');
         break;
-      case 'Space': {
+      case event.code === 'Space': {
         isActive ? setIsActive(false) : setIsActive(true);
         break;
       }
@@ -115,6 +120,7 @@ const GameWrapper = () => {
                 cordY: y,
               });
             }
+
             appleCtx.fillStyle = 'red';
             appleCtx.fillRect(appleCordX, appleCordY, 20, 20);
             return elem;
@@ -184,4 +190,4 @@ const GameWrapper = () => {
   );
 };
 
-export default GameWrapper;
+export default Snake;
