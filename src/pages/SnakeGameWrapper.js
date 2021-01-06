@@ -32,13 +32,13 @@ const Snake = () => {
 
   // перехват нажатия кнопки на клавиатуре
   useEffect(() => {
-    document.addEventListener('keydown', press);
+    document.addEventListener('keydown', buttonManagement);
     return () => {
-      document.removeEventListener('keydown', press);
+      document.removeEventListener('keydown', buttonManagement);
     };
   }, [isActive, direction]);
 
-  const press = (event) => {
+  const buttonManagement = (event) => {
     if (!codes.includes(event.code)) {
       return;
     }
@@ -82,36 +82,12 @@ const Snake = () => {
             const { appleCordX, appleCordY } = appleCords;
             const isHead = index === 0;
 
-            if (isHead) {
-              context.fillStyle = '#FFEB3B';
-            } else {
-              context.fillStyle = '#F50057';
-            }
-
-            let { x, y } = changeDirectionSnake(index, cordX, cordY);
+            const { x, y } = changeDirectionSnake(index, cordX, cordY, canvas);
             // console.log('x', x);
             // console.log('y', y);
 
-            // если уходит за границы
-            if (x > canvas.width) {
-              x = 0;
-            }
-
-            if (x < 0) {
-              x = canvas.width;
-            }
-
-            if (y > canvas.height) {
-              y = 0;
-            }
-
-            if (y < 0) {
-              y = canvas.height;
-            }
-
             elem.cordX = x;
             elem.cordY = y;
-            context.fillRect(x, y, 20, 20);
 
             if (x === appleCordX && y === appleCordY) {
               random();
@@ -121,18 +97,40 @@ const Snake = () => {
               });
             }
 
+            if (isHead) {
+              context.fillStyle = '#FFEB3B';
+            } else {
+              context.fillStyle = '#009688';
+            }
+
+            context.fillRect(x, y, 20, 20);
+
             appleCtx.fillStyle = 'red';
             appleCtx.fillRect(appleCordX, appleCordY, 20, 20);
             return elem;
           });
-          const result = snake.concat(snakeTail);
-          setSnakeBody(result);
+
+          // Проверка на пересечение с хвостом.
+          const { cordX, cordY } = snake[0];
+          let check = false;
+          snakeBody.forEach((item, idx) => {
+            if (item.cordX === cordX && item.cordY === cordY) {
+              const result = snake.slice(0, idx - 1);
+              setSnakeBody(result);
+              check = true;
+            }
+          });
+
+          if (!check) {
+            const result = snake.concat(snakeTail);
+            setSnakeBody(result);
+          }
         }, speed);
       }
     }
   };
 
-  const changeDirectionSnake = (index, cordX, cordY) => {
+  const changeDirectionSnake = (index, cordX, cordY, canvas) => {
     const step = 20;
     const isHead = index === 0;
     let x = cordX;
@@ -151,6 +149,23 @@ const Snake = () => {
       }
       if (direction === 'down') {
         y += step;
+      }
+
+      // условия выхода за рамки canvas
+      if (x >= canvas.width) {
+        x = 0;
+      }
+
+      if (x < 0) {
+        x = canvas.width - step;
+      }
+
+      if (y > canvas.height - step) {
+        y = 0;
+      }
+
+      if (y < 0) {
+        y = canvas.height - step;
       }
     } else {
       x = snakeBody[index - 1].cordX;
