@@ -24,6 +24,16 @@ const SnakeGameReducer = (state, { type, payload }) => {
         ...state,
         appleCords: payload.payload,
       };
+    case 'SET_COUNT':
+      return {
+        ...state,
+        count: payload.count,
+      };
+    case 'SET_MAX_COUNT':
+      return {
+        ...state,
+        maxCount: payload.count,
+      };
     default:
       return state;
   }

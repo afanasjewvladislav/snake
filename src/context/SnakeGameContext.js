@@ -16,10 +16,19 @@ const SnakeGameProvider = ({ children }) => {
     speed: 100,
     direction: 'right',
     appleCords: null,
+    count: 0,
+    maxCount: 0,
   });
 
   const setSnakeBody = (payload) => {
     dispatch({ type: 'SET_SNAKE_BODY', payload: { payload } });
+    if (items.snakeBody.length !== payload.length) {
+      const count = payload.length - 1;
+      dispatch({ type: 'SET_COUNT', payload: { count } });
+      if (count > items.maxCount) {
+        dispatch({ type: 'SET_MAX_COUNT', payload: { count } });
+      }
+    }
   };
 
   const setDirection = (payload) => {
@@ -47,6 +56,8 @@ const SnakeGameProvider = ({ children }) => {
         setIsActive,
         appleCords: items.appleCords,
         setAppleCords,
+        count: items.count,
+        maxCount: items.maxCount,
       }}
     >
       {children}
