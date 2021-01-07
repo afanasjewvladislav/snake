@@ -19,9 +19,13 @@ const Header = () => {
       >
         Рекорд: {maxCount}
       </AppBarTitle>
-      <AppBarAction id="simple-usage-search" first aria-label="Search">
-        <MoreVertSVGIcon />
-      </AppBarAction>
+      {/* <AppBarAction id="simple-usage-search" first aria-label="Search"> */}
+      {/*  <MoreVertSVGIcon */}
+      {/*    onClick={() => { */}
+      {/*      console.log('TEST'); */}
+      {/*    }} */}
+      {/*  /> */}
+      {/* </AppBarAction> */}
     </AppBar>
   );
 };
