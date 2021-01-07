@@ -6,6 +6,6 @@ export default [
   'KeyW',
   'KeyS',
   'KeyA',
-  'keyD',
+  'KeyD',
   'Space',
 ];

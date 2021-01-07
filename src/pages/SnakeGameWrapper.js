@@ -43,17 +43,22 @@ const Snake = () => {
       return;
     }
 
+    const up = ['ArrowUp', 'KeyW'].some((item) => item === event.code);
+    const down = ['ArrowDown', 'KeyS'].some((item) => item === event.code);
+    const left = ['ArrowLeft', 'KeyA'].some((item) => item === event.code);
+    const right = ['ArrowRight', 'KeyD'].some((item) => item === event.code);
+
     switch (true) {
-      case event.code === 'ArrowUp' && direction !== 'down':
+      case up && direction !== 'down':
         setDirection('up');
         break;
-      case event.code === 'ArrowDown' && direction !== 'up':
+      case down && direction !== 'up':
         setDirection('down');
         break;
-      case event.code === 'ArrowLeft' && direction !== 'right':
+      case left && direction !== 'right':
         setDirection('left');
         break;
-      case event.code === 'ArrowRight' && direction !== 'left':
+      case right && direction !== 'left':
         setDirection('right');
         break;
       case event.code === 'Space': {
