@@ -7,6 +7,7 @@ export const SnakeGameContext = createContext({});
 const SnakeGameProvider = ({ children }) => {
   const [items, dispatch] = useReducer(SnakeGameReducer, {
     isActive: false,
+    newGame: true,
     snakeBody: [
       {
         cordX: 200,
@@ -37,6 +38,9 @@ const SnakeGameProvider = ({ children }) => {
 
   const setIsActive = (payload) => {
     dispatch({ type: 'SET_IS_ACTIVE', payload: { payload } });
+    if (items.newGame) {
+      dispatch({ type: 'SET_NOT_NEW_GAME', payload: { payload: false } });
+    }
   };
 
   const setAppleCords = (payload) => {
@@ -58,6 +62,7 @@ const SnakeGameProvider = ({ children }) => {
         setAppleCords,
         count: items.count,
         maxCount: items.maxCount,
+        newGame: items.newGame,
       }}
     >
       {children}

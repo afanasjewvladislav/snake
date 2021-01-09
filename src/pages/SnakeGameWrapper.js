@@ -5,6 +5,8 @@ import codes from '../entity/buttonCodes';
 
 import { SnakeGameContext } from '../context/SnakeGameContext';
 
+import './SnakeGameWrapper.sass';
+
 const Snake = () => {
   const ref = useRef(null);
 
@@ -18,6 +20,7 @@ const Snake = () => {
     setIsActive,
     appleCords,
     setAppleCords,
+    newGame,
   } = useContext(SnakeGameContext);
 
   useEffect(() => {
@@ -196,24 +199,21 @@ const Snake = () => {
   };
 
   return (
-    <section
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        margin: '40px 0 0 0',
-      }}
-    >
+    <section className="snake-game_wrapper">
       <div />
       <div>
-        <Card
-          style={{
-            width: '800px',
-            height: '800px',
-          }}
-        >
+        <Card className="snake-game_canvas-wrapper">
           <canvas id="responsive-canvas" ref={ref} />
         </Card>
       </div>
+      {!isActive && !newGame && (
+        <div className="snake-game_message snake-game_message-pause">ПАУЗА</div>
+      )}
+      {!isActive && newGame && (
+        <div className="snake-game_message snake-game_message-start">
+          Для старта нажмите клавишу Space!
+        </div>
+      )}
     </section>
   );
 };

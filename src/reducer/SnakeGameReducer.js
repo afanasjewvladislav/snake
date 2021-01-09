@@ -34,6 +34,11 @@ const SnakeGameReducer = (state, { type, payload }) => {
         ...state,
         maxCount: payload.count,
       };
+    case 'SET_NOT_NEW_GAME':
+      return {
+        ...state,
+        newGame: payload.payload,
+      };
     default:
       return state;
   }
